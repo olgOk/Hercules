@@ -57,7 +57,6 @@ int main(int ac, char **av)
         return (0);
     }
     printf("Listeting...\n");
-    //pid_t pid = Demonize();
     printf("Server ready to connect...\n");
     while (1)
     {
