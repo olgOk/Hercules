@@ -6,7 +6,7 @@
 #    By: vokrut <vokrut@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/03/09 11:25:24 by vokrut            #+#    #+#              #
-#    Updated: 2019/03/09 16:56:08 by vokrut           ###   ########.fr        #
+#    Updated: 2019/03/09 17:03:53 by vokrut           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,9 +15,9 @@ On Server site:
 1. Compile the server.c using <gcc server.c -o server>
 2. Run server providing the port e.g. <./server 5000>, 
     where port number = 5000;
-3. If running as deamon use  <./server -D 5000>
+3. If running as daemon use  <./server -D 5000>
     -> to silence warnigns use -w flag
-    -> to stop deamon provide in the terminal line <killall server>
+    -> to stop daemon provide in the terminal line <killall server>
     -> to see the prossecc in background use <top>
 
 
