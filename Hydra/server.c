@@ -6,7 +6,7 @@
 /*   By: vokrut <vokrut@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/07 22:34:17 by vokrut            #+#    #+#             */
-/*   Updated: 2019/03/09 14:31:52 by vokrut           ###   ########.fr       */
+/*   Updated: 2019/03/09 16:56:19 by vokrut           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#define PORT_NUM 5050
 
 int main(int ac, char **av)
 {
@@ -27,12 +28,23 @@ int main(int ac, char **av)
     char                buf[256];
     struct sockaddr_in  addr;
     socklen_t           addr_size;
+    int                 port;
+    int                 flag;
 
-    if (ac != 2)
+    printf("\033[5;33m");
+    if (ac == 2)
     {
-        printf("Port number has not been provided\n!");
-        return (0);
+        flag = 0;
+        port = atoi(av[1]);
     }
+    else if (ac == 3 && !strcmp(av[1], "-D"))
+    {
+        flag = 1;
+        port = atoi(av[2]);
+        printf("\033[5;31mRunning as Daemon\033[5;33m\n");
+    }
+    else
+        printf("Either port or command provided incorrectly\n");
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0)
     {
@@ -43,14 +55,13 @@ int main(int ac, char **av)
     memset(&addr, '0', sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    addr.sin_port = htons(atoi(av[1]));
+    addr.sin_port = htons(port);
     if (bind(sock, (struct sockaddr*)&addr, sizeof(addr)))
     {
         printf("Failed to bind\n");
         return (0);
     }
     printf("Socket has been successfully bound\n");
-    
     if (listen (sock, 5) == -1)
     {
         printf("Failed to lesten");
@@ -60,6 +71,8 @@ int main(int ac, char **av)
     printf("Server ready to connect...\n");
     while (1)
     {
+        if (flag)
+            daemon(0, 0);
         addr_size = sizeof(addr);
         sock_accept = accept(sock, (struct sockaddr*)&addr, &addr_size);
         if (sock_accept < 0)
@@ -73,8 +86,10 @@ int main(int ac, char **av)
             if (bytes_read <= 0)
                 break ;
             buf[bytes_read] = '\0';
-            if (!strncmp(buf, "ping", 4))
-                send(sock_accept, "pong pong\n", 10, 0);
+            if (!strncmp(buf, "ping", 4) && !flag)
+                send(sock_accept, "\033[5;33m\npong pong\n", 20, 0);
+            else if (!strncmp(buf, "ping", 4) && flag)
+                send(sock_accept, "\033[5;31m\nRunning as Daemon\033[5;33m\npong pong\n", 50, 0);
         }
         close(sock_accept);
     }
